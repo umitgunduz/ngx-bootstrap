@@ -104,13 +104,13 @@ export class ComponentLoader<T> {
   }
 
   // todo: appendChild to element or document.querySelector(this.container)
-  public show(opts: { content?: string | TemplateRef<any>, context?: any, [key: string]: any } = {}): ComponentRef<T> {
+  public show(opts: { content?: string | TemplateRef<any>, context?: any, data?: any, [key: string]: any } = {}): ComponentRef<T> {
     this._subscribePositioning();
     this._innerComponent = null;
 
     if (!this._componentRef) {
       this.onBeforeShow.emit();
-      this._contentRef = this._getContentRef(opts.content, opts.context);
+      this._contentRef = this._getContentRef(opts.content, opts.context, opts.data);
       const injector = ReflectiveInjector.resolveAndCreate(this._providers, this._injector);
 
       this._componentRef = this._componentFactory.create(injector, this._contentRef.nodes);
@@ -291,7 +291,7 @@ export class ComponentLoader<T> {
     this._zoneSubscription = null;
   }
 
-  private _getContentRef(content: string | TemplateRef<any> | any, context?: any): ContentRef {
+  private _getContentRef(content: string | TemplateRef<any> | any, context?: any, data?: any): ContentRef {
     if (!content) {
       return new ContentRef([]);
     }
@@ -311,6 +311,7 @@ export class ComponentLoader<T> {
       const contentCmptFactory = this._componentFactoryResolver.resolveComponentFactory(content);
       const modalContentInjector = ReflectiveInjector.resolveAndCreate([...this._providers, content], this._injector);
       const componentRef = contentCmptFactory.create(modalContentInjector);
+      Object.assign(componentRef.instance, data);
       this._applicationRef.attachView(componentRef.hostView);
       return new ContentRef([[componentRef.location.nativeElement]], componentRef.hostView, componentRef);
     }

@@ -1694,6 +1694,11 @@ export const ngdoc: any = {
         "description": "<p>Css class for opened modal</p>\n"
       },
       {
+        "name": "data",
+        "type": "any",
+        "description": "<p>Modal data</p>\n"
+      },
+      {
         "name": "ignoreBackdropClick",
         "type": "boolean",
         "description": "<p>Ignore the backdrop click</p>\n"
